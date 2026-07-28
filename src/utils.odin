@@ -1,34 +1,37 @@
 package tuilock
 
 import "core:fmt"
+import "core:c/libc"
+import "core:os"
 import "core:strings"
 import l "core:sys/linux"
 
 
-panic :: proc(msg: string, args: ..any)
+panic :: proc(msg: string, err: l.Errno, args: ..any)
 {
-    fmt.eprintfln("TUILock failure: {}", fmt.tprintf(msg, ..args))
-    l.exit(1)
+    text := strings.clone_from_cstring(libc.strerror(cast(i32) err))
+    fmt.eprintfln("TUILock: %s: %v (%s)", fmt.tprintf(msg, ..args), err, text)
+    os.exit(cast(int) err)
 }
 
 set_io_vt :: proc(vt_number: int)
 {
     _, err := l.setsid()
     if err != .NONE {
-        panic("setsid: %v", err)
+        panic("setsid", err)
     }
 
     fd: l.Fd
     tty_path := fmt.tprintf("/dev/tty%d", vt_number)
     fd, err = l.open(strings.clone_to_cstring(tty_path), {.RDWR})
     if err != .NONE {
-        panic("open %s: %v", tty_path, err)
+        panic("open %s", err, tty_path)
     }
     defer l.close(fd)
 
     io_res := cast(int) l.ioctl(fd, TIOCSCTTY, 1)
     if io_res < 0 {
-        panic("TIOCSCTTY: %v", l.Errno(-io_res))
+        panic("TIOCSCTTY", l.Errno(-io_res))
     }
 
     l.dup2(fd, l.STDIN_FILENO)
@@ -40,17 +43,17 @@ activate_vt :: proc(vt_number: int)
 {
     fd, err := l.open("/dev/console", {.RDWR})
     if err != .NONE {
-        panic("open /dev/console: %v", err)
+        panic("open /dev/console", err)
     }
     defer l.close(fd)
 
     io_res := cast(int) l.ioctl(fd, VT_ACTIVATE, uintptr(vt_number))
     if io_res < 0 {
-        panic("VT_ACTIVATE: %v", l.Errno(-io_res))
+        panic("VT_ACTIVATE", l.Errno(-io_res))
     }
 
     io_res = cast(int) l.ioctl(fd, VT_WAITACTIVE, uintptr(vt_number) )
     if io_res < 0 {
-        panic("VT_WAITACTIVE: %v", l.Errno(-io_res))
+        panic("VT_WAITACTIVE", l.Errno(-io_res))
     }
 }
