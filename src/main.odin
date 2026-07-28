@@ -4,15 +4,6 @@ import "core:fmt"
 import l "core:sys/linux"
 
 
-TIOCSCTTY :: u32(0x540E)
-
-
-panic :: proc(msg: string)
-{
-    fmt.eprintfln("TUILock failure: {}", msg)
-    l.exit(1)
-}
-
 main :: proc()
 {
     err: l.Errno
@@ -48,6 +39,6 @@ main :: proc()
         l.dup2(fd, l.STDOUT_FILENO)
         l.dup2(fd, l.STDERR_FILENO)
 
-        fmt.printfln("This is TUILock!")
+        gui_draw_screen()
     }
 }
