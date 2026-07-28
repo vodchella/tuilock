@@ -1,12 +1,12 @@
 package tuilock
 
 import "core:os"
-import l "core:sys/linux"
+import linux "core:sys/linux"
 
 
 main :: proc()
 {
-    pid, err := l.fork()
+    pid, err := linux.fork()
     is_child := pid == 0
     if err != .NONE {
         if !is_child {
@@ -23,17 +23,17 @@ main :: proc()
     }
 
     status: u32
-    usage: l.RUsage
+    usage: linux.RUsage
 
-    _, err = l.waitpid(pid, &status, {}, &usage)
+    _, err = linux.waitpid(pid, &status, {}, &usage)
     if err != .NONE {
-        panic("waitpid failed", err)
+        panic("waitpid", err)
     }
-    if l.WIFEXITED(status) {
-        os.exit(cast(int) l.WEXITSTATUS(status))
+    if linux.WIFEXITED(status) {
+        os.exit(cast(int) linux.WEXITSTATUS(status))
     }
-    if l.WIFSIGNALED(status) {
-        os.exit(128 + cast(int) l.WTERMSIG(status))
+    if linux.WIFSIGNALED(status) {
+        os.exit(128 + cast(int) linux.WTERMSIG(status))
     }
     os.exit(1)
 }
