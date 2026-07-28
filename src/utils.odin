@@ -31,3 +31,12 @@ wait_pid_and_exit :: proc(pid: linux.Pid)
     }
     os.exit(1)
 }
+
+get_current_datetime_string :: proc() -> string
+{
+    buf: [64]u8
+    t  := libc.time(nil)
+    tm := libc.localtime(&t)
+    libc.strftime(&buf[0], len(buf), "%a, %d %b %Y - %H:%M", tm)
+    return strings.clone_from_cstring(cstring(&buf[0]))
+}

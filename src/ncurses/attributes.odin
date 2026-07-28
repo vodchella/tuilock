@@ -56,14 +56,22 @@ WA_TOP := A_TOP
 WA_VERTICAL := A_VERTICAL
 WA_ITALIC := A_ITALIC
 
-COLOR_BLACK   :: 0
-COLOR_RED     :: 1
-COLOR_GREEN   :: 2
-COLOR_YELLOW  :: 3
-COLOR_BLUE    :: 4
-COLOR_MAGENTA :: 5
-COLOR_CYAN    :: 6
-COLOR_WHITE   :: 7
+COLOR_BLACK         :: 0
+COLOR_RED           :: 1
+COLOR_GREEN         :: 2
+COLOR_YELLOW        :: 3
+COLOR_BLUE          :: 4
+COLOR_MAGENTA       :: 5
+COLOR_CYAN          :: 6
+COLOR_WHITE         :: 7
+COLOR_BRIGHT_BLACK  :: 8
+COLOR_LIGHT_RED     :: 9
+COLOR_LIGHT_GREEN   :: 10
+COLOR_LIGHT_YELLOW  :: 11
+COLOR_LIGHT_BLUE    :: 12
+COLOR_LIGHT_MAGENTA :: 13
+COLOR_LIGHT_CYAN    :: 14
+COLOR_LIGHT_WHITE   :: 15
 
 foreign ncurses {
 	// Maximum number of colors.
