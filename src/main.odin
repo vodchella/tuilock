@@ -16,24 +16,10 @@ main :: proc()
     }
 
     if is_child {
-        set_io_vt(TARGET_VT)
-        activate_vt(TARGET_VT)
+        vt_switch(TARGET_VT)
         gui_draw_screen()
         return
     }
 
-    status: u32
-    usage: linux.RUsage
-
-    _, err = linux.waitpid(pid, &status, {}, &usage)
-    if err != .NONE {
-        panic("waitpid", err)
-    }
-    if linux.WIFEXITED(status) {
-        os.exit(cast(int) linux.WEXITSTATUS(status))
-    }
-    if linux.WIFSIGNALED(status) {
-        os.exit(128 + cast(int) linux.WTERMSIG(status))
-    }
-    os.exit(1)
+    wait_pid_and_exit(pid)
 }

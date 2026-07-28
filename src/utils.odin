@@ -14,46 +14,20 @@ panic :: proc(msg: string, err: linux.Errno, args: ..any)
     os.exit(cast(int) err)
 }
 
-set_io_vt :: proc(vt_number: int)
+wait_pid_and_exit :: proc(pid: linux.Pid)
 {
-    _, err := linux.setsid()
+    status: u32
+    usage: linux.RUsage
+
+    _, err := linux.waitpid(pid, &status, {}, &usage)
     if err != .NONE {
-        panic("setsid", err)
+        panic("waitpid", err)
     }
-
-    fd: linux.Fd
-    tty_path := fmt.tprintf("/dev/tty%d", vt_number)
-    fd, err = linux.open(strings.clone_to_cstring(tty_path), {.RDWR})
-    if err != .NONE {
-        panic("open %s", err, tty_path)
+    if linux.WIFEXITED(status) {
+        os.exit(cast(int) linux.WEXITSTATUS(status))
     }
-    defer linux.close(fd)
-
-    io_res := cast(int) linux.ioctl(fd, TIOCSCTTY, 1)
-    if io_res < 0 {
-        panic("TIOCSCTTY", cast(linux.Errno) -io_res)
+    if linux.WIFSIGNALED(status) {
+        os.exit(128 + cast(int) linux.WTERMSIG(status))
     }
-
-    linux.dup2(fd, linux.STDIN_FILENO)
-    linux.dup2(fd, linux.STDOUT_FILENO)
-    linux.dup2(fd, linux.STDERR_FILENO)
-}
-
-activate_vt :: proc(vt_number: int)
-{
-    fd, err := linux.open("/dev/console", {.RDWR})
-    if err != .NONE {
-        panic("open /dev/console", err)
-    }
-    defer linux.close(fd)
-
-    io_res := cast(int) linux.ioctl(fd, VT_ACTIVATE, cast(uintptr) vt_number)
-    if io_res < 0 {
-        panic("VT_ACTIVATE", cast(linux.Errno) -io_res)
-    }
-
-    io_res = cast(int) linux.ioctl(fd, VT_WAITACTIVE, cast(uintptr) vt_number)
-    if io_res < 0 {
-        panic("VT_WAITACTIVE", cast(linux.Errno) -io_res)
-    }
+    os.exit(1)
 }
