@@ -9,8 +9,8 @@ import l "core:sys/linux"
 
 panic :: proc(msg: string, err: l.Errno, args: ..any)
 {
-    text := strings.clone_from_cstring(libc.strerror(cast(i32) err))
-    fmt.eprintfln("TUILock: %s: %v (%s)", fmt.tprintf(msg, ..args), err, text)
+    err_desc := strings.clone_from_cstring(libc.strerror(cast(i32) err))
+    fmt.eprintfln("TUILock: %s: %v (%s)", fmt.tprintf(msg, ..args), err, err_desc)
     os.exit(cast(int) err)
 }
 
