@@ -19,6 +19,7 @@ main :: proc()
         cfg := init_configs()
         vt_switch(cfg.target_vt)
         gui_draw_screen(cfg)
+        // vt_switch(1)  // EPERM
         return
     }
 
