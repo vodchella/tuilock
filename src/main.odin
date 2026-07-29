@@ -16,8 +16,9 @@ main :: proc()
     }
 
     if is_child {
-        vt_switch(TARGET_VT)
-        gui_draw_screen()
+        cfg := init_configs()
+        vt_switch(cfg.target_vt)
+        gui_draw_screen(cfg)
         return
     }
 

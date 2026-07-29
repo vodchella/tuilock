@@ -5,13 +5,13 @@ foreign import ncurses "system:ncurses"
 
 foreign ncurses {
 
-	// Enables the terminal's keypad. 
+	// Enables the terminal's keypad.
 	// If enabled, the user can press a function key (such as an arrow key) and wgetch returns a single value representing the function key, as in KEY_LEFT.
 	//
 	// If disabled, curses does not treat function keys specially and the program has to interpret the escape sequences itself.
 	//
 	// If the keypad in the terminal can be turned on (made to transmit) and off (made to work locally), turning on this option causes the terminal keypad to be turned on when wgetch is called.
-	// The default value for keypad is false. 
+	// The default value for keypad is false.
 	keypad :: proc(win: ^Window, enable: bool) -> c.int ---
 
 	// --- INPUT
@@ -38,7 +38,7 @@ foreign ncurses {
 	mvwscanw :: proc(win: ^Window, y, x: c.int, fmt: cstring, #c_vararg args: ..any) -> c.int ---
 
 
-	// --- OUTPUT 
+	// --- OUTPUT
 
 	printw :: proc(fmt: cstring, #c_vararg args: ..any) -> c.int ---
 	wprintw :: proc(win: ^Window, fmt: cstring, #c_vararg args: ..any) -> c.int ---
@@ -70,23 +70,23 @@ foreign ncurses {
 	// - DEL (character 127) is displayed as ^?.
 	// - Values above 128 are either meta characters (if the screen has not been initialized, or if meta has been called with a TRUE parameter), shown in the M-X notation, or are displayed as themselves. In the latter case, the values may not be printable; this follows the X/Open specification.
 	// - Values above 256 may be the names of the names of function keys.
-	// - Otherwise (if there is no corresponding name) the function returns null, to denote an error. X/Open also lists an "UNKNOWN KEY" return value, which some implementations return rather than null. 
+	// - Otherwise (if there is no corresponding name) the function returns null, to denote an error. X/Open also lists an "UNKNOWN KEY" return value, which some implementations return rather than null.
 	keyname :: proc(c: c.int) -> cstring ---
 }
 
-// down-arrow key 
+// down-arrow key
 KEY_DOWN :: 0o402
-// up-arrow key 
+// up-arrow key
 KEY_UP :: 0o403
-// left-arrow key 
+// left-arrow key
 KEY_LEFT :: 0o404
-// right-arrow key 
+// right-arrow key
 KEY_RIGHT :: 0o405
-// home key 
+// home key
 KEY_HOME :: 0o406
-// backspace key 
+// backspace key
 KEY_BACKSPACE :: 0o407
-// Function keys.  Space for 64 
+// Function keys.  Space for 64
 KEY_F0 :: 0o410
 KEY_F1 :: 0o411
 KEY_F2 :: 0o412
@@ -103,168 +103,168 @@ KEY_F12 :: 0o424
 KEY_F :: #force_inline proc(n: c.int) -> c.int {
 	return c.int(KEY_F0) + n
 }
-// delete-line key 
+// delete-line key
 KEY_DL :: 0o510
-// insert-line key 
+// insert-line key
 KEY_IL :: 0o511
-// delete-character key 
+// delete-character key
 KEY_DC :: 0o512
-// insert-character key 
+// insert-character key
 KEY_IC :: 0o513
-// sent by rmir or smir in insert mode 
+// sent by rmir or smir in insert mode
 KEY_EIC :: 0o514
-// clear-screen or erase key 
+// clear-screen or erase key
 KEY_CLEAR :: 0o515
-// clear-to-end-of-screen key 
+// clear-to-end-of-screen key
 KEY_EOS :: 0o516
-// clear-to-end-of-line key 
+// clear-to-end-of-line key
 KEY_EOL :: 0o517
-// scroll-forward key 
+// scroll-forward key
 KEY_SF :: 0o520
-// scroll-backward key 
+// scroll-backward key
 KEY_SR :: 0o521
-// next-page key 
+// next-page key
 KEY_NPAGE :: 0o522
-// previous-page key 
+// previous-page key
 KEY_PPAGE :: 0o523
-// set-tab key 
+// set-tab key
 KEY_STAB :: 0o524
-// clear-tab key 
+// clear-tab key
 KEY_CTAB :: 0o525
-// clear-all-tabs key 
+// clear-all-tabs key
 KEY_CATAB :: 0o526
-// enter/send key 
+// enter/send key
 KEY_ENTER :: 0o527
-// print key 
+// print key
 KEY_PRINT :: 0o532
-// lower-left key (home down) 
+// lower-left key (home down)
 KEY_LL :: 0o533
-// upper left of keypad 
+// upper left of keypad
 KEY_A1 :: 0o534
-// upper right of keypad 
+// upper right of keypad
 KEY_A3 :: 0o535
-// center of keypad 
+// center of keypad
 KEY_B2 :: 0o536
-// lower left of keypad 
+// lower left of keypad
 KEY_C1 :: 0o537
-// lower right of keypad 
+// lower right of keypad
 KEY_C3 :: 0o540
-// back-tab key 
+// back-tab key
 KEY_BTAB :: 0o541
-// begin key 
+// begin key
 KEY_BEG :: 0o542
-// cancel key 
+// cancel key
 KEY_CANCEL :: 0o543
-// close key 
+// close key
 KEY_CLOSE :: 0o544
-// command key 
+// command key
 KEY_COMMAND :: 0o545
-// copy key 
+// copy key
 KEY_COPY :: 0o546
-// create key 
+// create key
 KEY_CREATE :: 0o547
-// end key 
+// end key
 KEY_END :: 0o550
-// exit key 
+// exit key
 KEY_EXIT :: 0o551
-// find key 
+// find key
 KEY_FIND :: 0o552
-// help key 
+// help key
 KEY_HELP :: 0o553
-// mark key 
+// mark key
 KEY_MARK :: 0o554
-// message key 
+// message key
 KEY_MESSAGE :: 0o555
-// move key 
+// move key
 KEY_MOVE :: 0o556
-// next key 
+// next key
 KEY_NEXT :: 0o557
-// open key 
+// open key
 KEY_OPEN :: 0o560
-// options key 
+// options key
 KEY_OPTIONS :: 0o561
-// previous key 
+// previous key
 KEY_PREVIOUS :: 0o562
-// redo key 
+// redo key
 KEY_REDO :: 0o563
-// reference key 
+// reference key
 KEY_REFERENCE :: 0o564
-// refresh key 
+// refresh key
 KEY_REFRESH :: 0o565
-// replace key 
+// replace key
 KEY_REPLACE :: 0o566
-// restart key 
+// restart key
 KEY_RESTART :: 0o567
-// resume key 
+// resume key
 KEY_RESUME :: 0o570
-// save key 
+// save key
 KEY_SAVE :: 0o571
-// shifted begin key 
+// shifted begin key
 KEY_SBEG :: 0o572
-// shifted cancel key 
+// shifted cancel key
 KEY_SCANCEL :: 0o573
-// shifted command key 
+// shifted command key
 KEY_SCOMMAND :: 0o574
-// shifted copy key 
+// shifted copy key
 KEY_SCOPY :: 0o575
-// shifted create key 
+// shifted create key
 KEY_SCREATE :: 0o576
-// shifted delete-character key 
+// shifted delete-character key
 KEY_SDC :: 0o577
-// shifted delete-line key 
+// shifted delete-line key
 KEY_SDL :: 0o600
-// select key 
+// select key
 KEY_SELECT :: 0o601
-// shifted end key 
+// shifted end key
 KEY_SEND :: 0o602
-// shifted clear-to-end-of-line key 
+// shifted clear-to-end-of-line key
 KEY_SEOL :: 0o603
-// shifted exit key 
+// shifted exit key
 KEY_SEXIT :: 0o604
-// shifted find key 
+// shifted find key
 KEY_SFIND :: 0o605
-// shifted help key 
+// shifted help key
 KEY_SHELP :: 0o606
-// shifted home key 
+// shifted home key
 KEY_SHOME :: 0o607
-// shifted insert-character key 
+// shifted insert-character key
 KEY_SIC :: 0o610
-// shifted left-arrow key 
+// shifted left-arrow key
 KEY_SLEFT :: 0o611
-// shifted message key 
+// shifted message key
 KEY_SMESSAGE :: 0o612
-// shifted move key 
+// shifted move key
 KEY_SMOVE :: 0o613
-// shifted next key 
+// shifted next key
 KEY_SNEXT :: 0o614
-// shifted options key 
+// shifted options key
 KEY_SOPTIONS :: 0o615
-// shifted previous key 
+// shifted previous key
 KEY_SPREVIOUS :: 0o616
-// shifted print key 
+// shifted print key
 KEY_SPRINT :: 0o617
-// shifted redo key 
+// shifted redo key
 KEY_SREDO :: 0o620
-// shifted replace key 
+// shifted replace key
 KEY_SREPLACE :: 0o621
-// shifted right-arrow key 
+// shifted right-arrow key
 KEY_SRIGHT :: 0o622
-// shifted resume key 
+// shifted resume key
 KEY_SRESUME :: 0o623
-// shifted save key 
+// shifted save key
 KEY_SSAVE :: 0o624
-// shifted suspend key 
+// shifted suspend key
 KEY_SSUSPEND :: 0o625
-// shifted undo key 
+// shifted undo key
 KEY_SUNDO :: 0o626
-// suspend key 
+// suspend key
 KEY_SUSPEND :: 0o627
-// undo key 
+// undo key
 KEY_UNDO :: 0o630
-// Mouse event has occurred 
+// Mouse event has occurred
 KEY_MOUSE :: 0o631
-// Terminal resize event 
+// Terminal resize event
 KEY_RESIZE :: 0o632
-// Maximum key value is 0632 
+// Maximum key value is 0632
 KEY_MAX :: 0o777
 

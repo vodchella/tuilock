@@ -35,13 +35,13 @@ foreign ncurses {
 	//
 	// Raw mode is similar to cbreak mode, in that characters typed are immediately passed through to the user program.
 	// The differences are that in raw mode, the interrupt, quit, suspend, and flow control characters are all passed through uninterpreted, instead of generating a signal.
-	// The behavior of the BREAK key depends on other bits in the tty driver that are not set by curses. 
+	// The behavior of the BREAK key depends on other bits in the tty driver that are not set by curses.
 	raw :: proc() -> c.int ---
 	// Place the terminal out of raw mode.
 	//
 	// Raw mode is similar to cbreak mode, in that characters typed are immediately passed through to the user program.
 	// The differences are that in raw mode, the interrupt, quit, suspend, and flow control characters are all passed through uninterpreted, instead of generating a signal.
-	// The behavior of the BREAK key depends on other bits in the tty driver that are not set by curses. 
+	// The behavior of the BREAK key depends on other bits in the tty driver that are not set by curses.
 	noraw :: proc() -> c.int ---
 
 	// Disables line buffering and erase/kill character-processing (interrupt and flow control characters are unaffected),
