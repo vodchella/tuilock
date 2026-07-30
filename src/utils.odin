@@ -27,6 +27,22 @@ fork :: proc() -> linux.Pid
     return pid
 }
 
+start_killable_process :: proc(args: []string) -> i32
+{
+    new_args := make([]string, len(args) + 1)
+    new_args[0] = "setsid"
+    copy(new_args[1:], args)
+
+    locker, err := os.process_start({
+        command = new_args
+    })
+    if err != nil {
+        panic("start_killable_process", .ENOENT)
+    }
+
+    return cast(i32) locker.pid
+}
+
 wait_pid_and_exit :: proc(pid: linux.Pid)
 {
     status: u32

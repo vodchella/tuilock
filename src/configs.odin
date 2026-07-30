@@ -5,6 +5,7 @@ import "ncurses"
 
 
 Configs :: struct {
+    locker_cmd:       []string,
     username:         string,
     target_vt:        int,
     time_format:      string,
@@ -23,6 +24,7 @@ Configs :: struct {
 configs_init :: proc() -> (cfg: Configs)
 {
     using ncurses
+    cfg.locker_cmd       = {"i3lock", "--color=282828"}
     cfg.username         = get_original_username()
     cfg.target_vt        = 8
     cfg.time_format      = "%a, %d %b %Y - %H:%M"
