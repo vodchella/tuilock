@@ -3,7 +3,6 @@ package tuilock
 import "core:fmt"
 import "core:strings"
 import "core:sys/linux"
-import "core:sys/posix"
 
 
 @(private = "file")
@@ -92,13 +91,3 @@ vt_activate :: proc(vt_number: int)
         panic("ioctl VT_WAITACTIVE", cast(linux.Errno) -io_res)
     }
 }
-
-vt_ignore_term_signals :: proc()
-{
-    posix.sigignore(.SIGINT)   // Ctrl+C
-    posix.sigignore(.SIGQUIT)  // Ctrl+\
-    posix.sigignore(.SIGTSTP)  // Ctrl+Z
-    posix.sigignore(.SIGHUP)
-    posix.sigignore(.SIGTERM)  // kill PID
-}
-

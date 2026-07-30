@@ -4,17 +4,6 @@ package tuilock
 import "ncurses"
 
 
-ASCII_ESC           :: "\x1b"
-
-THEME_BACKGROUND    :: 1
-THEME_TIME          :: 2
-THEME_DIALOG        :: 3
-THEME_BORDER        :: 4
-THEME_GREET         :: 5
-THEME_PROMPT        :: 6
-THEME_INPUT         :: 7
-
-
 Configs :: struct {
     username:         string,
     target_vt:        int,
@@ -31,7 +20,7 @@ Configs :: struct {
     theme_input:      i16,
 }
 
-init_configs :: proc() -> (cfg: Configs)
+configs_init :: proc() -> (cfg: Configs)
 {
     using ncurses
     cfg.username         = get_original_username()

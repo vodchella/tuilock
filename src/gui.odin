@@ -1,4 +1,3 @@
-#+private file
 #+feature using-stmt
 package tuilock
 
@@ -8,11 +7,31 @@ import "ncurses"
 import "pam"
 
 
+@(private = "file")
+THEME_BACKGROUND    :: 1
+@(private = "file")
+THEME_TIME          :: 2
+@(private = "file")
+THEME_DIALOG        :: 3
+@(private = "file")
+THEME_BORDER        :: 4
+@(private = "file")
+THEME_GREET         :: 5
+@(private = "file")
+THEME_PROMPT        :: 6
+@(private = "file")
+THEME_INPUT         :: 7
+
+@(private = "file")
+ASCII_ESC           :: "\x1b"
+
+@(private = "file")
 Field_Kind :: enum {
     Username,
     Password,
 }
 
+@(private = "file")
 Text_Field :: struct {
     label:    string,
     buffer:   [64]u8,
@@ -22,6 +41,7 @@ Text_Field :: struct {
     value_x:  i32,
 }
 
+@(private = "file")
 Login_Dialog :: struct {
     height:       i32,
     width:        i32,
@@ -34,7 +54,6 @@ Login_Dialog :: struct {
 }
 
 
-@(private)
 gui_draw_screen :: proc(cfg: Configs)
 {
     using ncurses
@@ -75,12 +94,14 @@ gui_draw_screen :: proc(cfg: Configs)
     endwin()
 }
 
+@(private = "file")
 gui_fill_background :: proc()
 {
     using ncurses
     bkgd(' ' | COLOR_PAIR(THEME_BACKGROUND))
 }
 
+@(private = "file")
 gui_draw_time :: proc(cfg: Configs, rows, cols: i32)
 {
     using ncurses
@@ -90,6 +111,7 @@ gui_draw_time :: proc(cfg: Configs, rows, cols: i32)
     put_text(stdscr, 0, (cols - cast(i32) len(datetime)) / 2, datetime, THEME_TIME)
 }
 
+@(private = "file")
 gui_draw_field :: proc(win: ^ncurses.Window, field: ^Text_Field, active: bool) {
     using ncurses
 
@@ -103,6 +125,7 @@ gui_draw_field :: proc(win: ^ncurses.Window, field: ^Text_Field, active: bool) {
     put_text(win, field.y, field.value_x, output, THEME_INPUT)
 }
 
+@(private = "file")
 gui_draw_dialog :: proc(dialog: ^Login_Dialog) {
     using ncurses
 
@@ -133,6 +156,7 @@ gui_draw_dialog :: proc(dialog: ^Login_Dialog) {
 
 // ------------------------------------------------------------------------
 
+@(private = "file")
 dialog_init :: proc(cfg: Configs, rows, cols: i32) -> (dialog: Login_Dialog)
 {
     using ncurses
@@ -174,6 +198,7 @@ dialog_init :: proc(cfg: Configs, rows, cols: i32) -> (dialog: Login_Dialog)
     return
 }
 
+@(private = "file")
 dialog_active_field :: proc(dialog: ^Login_Dialog) -> ^Text_Field {
     switch dialog.active_field {
     case .Username:
@@ -184,10 +209,12 @@ dialog_active_field :: proc(dialog: ^Login_Dialog) -> ^Text_Field {
     return nil
 }
 
+@(private = "file")
 dialog_switch_field :: proc(dialog: ^Login_Dialog) {
     dialog.active_field = dialog.active_field == .Username ? .Password : .Username
 }
 
+@(private = "file")
 dialog_submit :: proc(dialog: ^Login_Dialog) -> bool {
     switch dialog.active_field {
     case .Username:
@@ -206,6 +233,7 @@ dialog_submit :: proc(dialog: ^Login_Dialog) -> bool {
 
 // ------------------------------------------------------------------------
 
+@(private = "file")
 field_add_char :: proc(field: ^Text_Field, ch: u8) {
     if field.length >= len(field.buffer) {
         return
@@ -214,6 +242,7 @@ field_add_char :: proc(field: ^Text_Field, ch: u8) {
     field.length += 1
 }
 
+@(private = "file")
 field_remove_char :: proc(field: ^Text_Field) {
     if field.length == 0 {
         return
@@ -222,12 +251,14 @@ field_remove_char :: proc(field: ^Text_Field) {
     field.buffer[field.length] = 0
 }
 
+@(private = "file")
 field_value :: proc(field: ^Text_Field) -> []u8 {
     return field.buffer[:field.length]
 }
 
 // ------------------------------------------------------------------------
 
+@(private = "file")
 handle_key :: proc(dialog: ^Login_Dialog, key: i32) -> bool {
     using ncurses
     switch key {
@@ -246,6 +277,7 @@ handle_key :: proc(dialog: ^Login_Dialog, key: i32) -> bool {
     return true
 }
 
+@(private = "file")
 put_text :: proc(win: ^ncurses.Window, y, x: i32, text: string, theme: i32) {
     using ncurses
 

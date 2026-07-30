@@ -7,10 +7,10 @@ main :: proc()
 {
     pid := fork()
     if pid == 0 {
-        cfg := init_configs()
+        cfg := configs_init()
         vt  := vt_get_active()
         vt_switch(cfg.target_vt)
-        vt_ignore_term_signals()
+        ignore_term_signals()
         gui_draw_screen(cfg)
         vt_switch(vt, false)
         return

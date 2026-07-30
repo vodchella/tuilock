@@ -45,6 +45,15 @@ wait_pid_and_exit :: proc(pid: linux.Pid)
     os.exit(1)
 }
 
+ignore_term_signals :: proc()
+{
+    posix.sigignore(.SIGINT)   // Ctrl+C
+    posix.sigignore(.SIGQUIT)  // Ctrl+\
+    posix.sigignore(.SIGTSTP)  // Ctrl+Z
+    posix.sigignore(.SIGHUP)
+    posix.sigignore(.SIGTERM)  // kill PID
+}
+
 get_current_datetime_string :: proc(format: string) -> string
 {
     formatc := strings.clone_to_cstring(format)
