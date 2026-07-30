@@ -1,6 +1,7 @@
 #+feature using-stmt
 package tuilock
 
+import "core:c"
 import "core:fmt"
 import "core:strings"
 import "ncurses"
@@ -297,9 +298,7 @@ put_text :: proc(
     using ncurses
 
     if is_input {
-        for i in 0 ..= len(text) {
-            mvwchgat(win, y, x + cast(i32) i, 1, A_NORMAL, 0, nil)
-        }
+        mvwchgat(win, y, x + cast(i32) len(text), 1, A_NORMAL, cast(c.short) theme, nil)
     }
 
     c_text := strings.clone_to_cstring(text)
