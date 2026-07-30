@@ -41,7 +41,7 @@ conversation_proc :: proc "c" (
         return BUF_ERR
     }
 
-    for i in 0..<int(num_msg) {
+    for i in 0..< int(num_msg) {
         message := messages[i]^
 
         switch message.msg_style {

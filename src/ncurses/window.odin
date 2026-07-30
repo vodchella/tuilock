@@ -13,14 +13,14 @@ foreign ncurses {
 	acs_map: [^]c.uint
 
 	getattrs :: proc(win: ^Window) -> c.int ---
-	getcurx :: proc(win: ^Window) -> c.int ---
-	getcury :: proc(win: ^Window) -> c.int ---
-	getbegx :: proc(win: ^Window) -> c.int ---
-	getbegy :: proc(win: ^Window) -> c.int ---
-	getmaxx :: proc(win: ^Window) -> c.int ---
-	getmaxy :: proc(win: ^Window) -> c.int ---
-	getparx :: proc(win: ^Window) -> c.int ---
-	getpary :: proc(win: ^Window) -> c.int ---
+	getcurx  :: proc(win: ^Window) -> c.int ---
+	getcury  :: proc(win: ^Window) -> c.int ---
+	getbegx  :: proc(win: ^Window) -> c.int ---
+	getbegy  :: proc(win: ^Window) -> c.int ---
+	getmaxx  :: proc(win: ^Window) -> c.int ---
+	getmaxy  :: proc(win: ^Window) -> c.int ---
+	getparx  :: proc(win: ^Window) -> c.int ---
+	getpary  :: proc(win: ^Window) -> c.int ---
 }
 
 foreign ncurses {
@@ -111,7 +111,7 @@ foreign ncurses {
 	werase :: proc(win: ^Window) -> c.int ---
 
 	// Resize the window. If either dimension is larger than the current values, the window's data is filled with blanks that have the current background rendition (as set by wbkgndset) merged into them.
-	wresize :: proc(win: ^Window, h, w: c.int) -> c.int ---
+	wresize  :: proc(win: ^Window, h, w: c.int) -> c.int ---
 
 	bkgd     :: proc(ch: c.int) -> int ---
 	wbkgd    :: proc(win: ^Window, ch: c.int) -> int ---
@@ -121,7 +121,7 @@ foreign ncurses {
 }
 
 // Get the current coordinates of the cursor.
-getyx :: proc(win: ^Window) -> (y, x: c.int) {return getcury(win), getcurx(win)}
+getyx    :: proc(win: ^Window) -> (y, x: c.int) {return getcury(win), getcurx(win)}
 // Get absolute screen coordinates of the specified window.
 getbegyx :: proc(win: ^Window) -> (y, x: c.int) {return getbegy(win), getbegx(win)}
 // Get the size of the current window.
@@ -140,59 +140,59 @@ ACS_URCORNER := acs_map['k']
 // lower right corner
 ACS_LRCORNER := acs_map['j']
 // tee pointing right
-ACS_LTEE := acs_map['t']
+ACS_LTEE     := acs_map['t']
 // tee pointing left
-ACS_RTEE := acs_map['u']
+ACS_RTEE     := acs_map['u']
 // tee pointing up
-ACS_BTEE := acs_map['v']
+ACS_BTEE     := acs_map['v']
 // tee pointing down
-ACS_TTEE := acs_map['w']
+ACS_TTEE     := acs_map['w']
 // horizontal line
-ACS_HLINE := acs_map['q']
+ACS_HLINE    := acs_map['q']
 // vertical line
-ACS_VLINE := acs_map['x']
+ACS_VLINE    := acs_map['x']
 // large plus or crossover
-ACS_PLUS := acs_map['n']
+ACS_PLUS     := acs_map['n']
 // scan line 1
-ACS_S1 := acs_map['o']
+ACS_S1       := acs_map['o']
 // scan line 9
-ACS_S9 := acs_map['s']
+ACS_S9       := acs_map['s']
 // diamon]
-ACS_DIAMOND := acs_map['`']
+ACS_DIAMOND  := acs_map['`']
 // checker board (stipple)
-ACS_CKBOARD := acs_map['a']
+ACS_CKBOARD  := acs_map['a']
 // degree symbol
-ACS_DEGREE := acs_map['f']
+ACS_DEGREE   := acs_map['f']
 // plus/minus
-ACS_PLMINUS := acs_map['g']
+ACS_PLMINUS  := acs_map['g']
 // bulle]
-ACS_BULLET := acs_map['~']
+ACS_BULLET   := acs_map['~']
 
 // -- Teletype 5410v1 symbols begin here
 
-ACS_LARROW := acs_map[','] /* arro] pointing left */
-ACS_RARROW := acs_map['+'] /* arro] pointing right */
-ACS_DARROW := acs_map['.'] /* arro] pointing down */
-ACS_UARROW := acs_map['-'] /* arrow pointing up */
-ACS_BOARD := acs_map['h'] /* board of squares */
+ACS_LARROW  := acs_map[','] /* arro] pointing left */
+ACS_RARROW  := acs_map['+'] /* arro] pointing right */
+ACS_DARROW  := acs_map['.'] /* arro] pointing down */
+ACS_UARROW  := acs_map['-'] /* arrow pointing up */
+ACS_BOARD   := acs_map['h'] /* board of squares */
 ACS_LANTERN := acs_map['i'] /* lantern symbol */
-ACS_BLOCK := acs_map['0'] /* solid square block */
+ACS_BLOCK   := acs_map['0'] /* solid square block */
 
 // -- These aren't documented, but a lot of System Vs have them anyway
 // -- (you can spot pprryyzz{{||}} in a lot of AT&T terminfo strings).
 // -- The ACS_names may not match AT&T's, our source didn't know them.
 
 // scan line 3
-ACS_S3 := acs_map['p']
+ACS_S3       := acs_map['p']
 // scan line 7
-ACS_S7 := acs_map['r']
+ACS_S7       := acs_map['r']
 // less/equal
-ACS_LEQUAL := acs_map['y']
+ACS_LEQUAL   := acs_map['y']
 // greater/equal
-ACS_GEQUAL := acs_map['z']
+ACS_GEQUAL   := acs_map['z']
 // Pi
-ACS_PI := acs_map['{']
+ACS_PI       := acs_map['{']
 // not equal
-ACS_NEQUAL := acs_map['|']
+ACS_NEQUAL   := acs_map['|']
 // UK pound sign
 ACS_STERLING := acs_map['}']

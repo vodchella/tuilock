@@ -112,7 +112,8 @@ gui_draw_time :: proc(cfg: Configs, rows, cols: i32)
 }
 
 @(private = "file")
-gui_draw_field :: proc(win: ^ncurses.Window, field: ^Text_Field, active: bool) {
+gui_draw_field :: proc(win: ^ncurses.Window, field: ^Text_Field, active: bool)
+{
     using ncurses
 
     if active { wattron(win, A_BOLD) }
@@ -122,11 +123,12 @@ gui_draw_field :: proc(win: ^ncurses.Window, field: ^Text_Field, active: bool) {
     value  := string(field_value(field))
     output := field.password ? strings.repeat("*", len(value)) : value
     defer if field.password { delete(output) }
-    put_text(win, field.y, field.value_x, output, THEME_INPUT)
+    put_text(win, field.y, field.value_x, output, THEME_INPUT, true)
 }
 
 @(private = "file")
-gui_draw_dialog :: proc(dialog: ^Login_Dialog) {
+gui_draw_dialog :: proc(dialog: ^Login_Dialog)
+{
     using ncurses
 
     win := dialog.window
@@ -140,12 +142,12 @@ gui_draw_dialog :: proc(dialog: ^Login_Dialog) {
     put_text(win, 2, greet_x, dialog.greet, THEME_GREET)
     put_text(win, 0, 2, " Authenticate to unlock: ", THEME_BORDER)
 
-    gui_draw_field(win, &dialog.username, dialog.active_field == .Username)
-    gui_draw_field(win, &dialog.password, dialog.active_field == .Password)
-
     if len(dialog.message) > 0 {
         put_text(win, 7, 2, dialog.message, THEME_BORDER)
     }
+
+    gui_draw_field(win, &dialog.username, dialog.active_field == .Username)
+    gui_draw_field(win, &dialog.password, dialog.active_field == .Password)
 
     field := dialog_active_field(dialog)
     cursor_x := field.value_x + cast(i32) field.length
@@ -199,7 +201,8 @@ dialog_init :: proc(cfg: Configs, rows, cols: i32) -> (dialog: Login_Dialog)
 }
 
 @(private = "file")
-dialog_active_field :: proc(dialog: ^Login_Dialog) -> ^Text_Field {
+dialog_active_field :: proc(dialog: ^Login_Dialog) -> ^Text_Field
+{
     switch dialog.active_field {
     case .Username:
         return &dialog.username
@@ -210,12 +213,14 @@ dialog_active_field :: proc(dialog: ^Login_Dialog) -> ^Text_Field {
 }
 
 @(private = "file")
-dialog_switch_field :: proc(dialog: ^Login_Dialog) {
+dialog_switch_field :: proc(dialog: ^Login_Dialog)
+{
     dialog.active_field = dialog.active_field == .Username ? .Password : .Username
 }
 
 @(private = "file")
-dialog_submit :: proc(dialog: ^Login_Dialog) -> bool {
+dialog_submit :: proc(dialog: ^Login_Dialog) -> bool
+{
     switch dialog.active_field {
     case .Username:
         dialog.active_field = .Password
@@ -234,7 +239,8 @@ dialog_submit :: proc(dialog: ^Login_Dialog) -> bool {
 // ------------------------------------------------------------------------
 
 @(private = "file")
-field_add_char :: proc(field: ^Text_Field, ch: u8) {
+field_add_char :: proc(field: ^Text_Field, ch: u8)
+{
     if field.length >= len(field.buffer) {
         return
     }
@@ -243,7 +249,8 @@ field_add_char :: proc(field: ^Text_Field, ch: u8) {
 }
 
 @(private = "file")
-field_remove_char :: proc(field: ^Text_Field) {
+field_remove_char :: proc(field: ^Text_Field)
+{
     if field.length == 0 {
         return
     }
@@ -252,14 +259,16 @@ field_remove_char :: proc(field: ^Text_Field) {
 }
 
 @(private = "file")
-field_value :: proc(field: ^Text_Field) -> []u8 {
+field_value :: proc(field: ^Text_Field) -> []u8
+{
     return field.buffer[:field.length]
 }
 
 // ------------------------------------------------------------------------
 
 @(private = "file")
-handle_key :: proc(dialog: ^Login_Dialog, key: i32) -> bool {
+handle_key :: proc(dialog: ^Login_Dialog, key: i32) -> bool
+{
     using ncurses
     switch key {
     case '\t':
@@ -278,12 +287,24 @@ handle_key :: proc(dialog: ^Login_Dialog, key: i32) -> bool {
 }
 
 @(private = "file")
-put_text :: proc(win: ^ncurses.Window, y, x: i32, text: string, theme: i32) {
+put_text :: proc(
+    win:      ^ncurses.Window,
+    y, x:     i32,
+    text:     string,
+    theme:    i32,
+    is_input: bool = false)
+{
     using ncurses
 
-    wattron(win, COLOR_PAIR(theme))
+    if is_input {
+        for i in 0 ..= len(text) {
+            mvwchgat(win, y, x + cast(i32) i, 1, A_NORMAL, 0, nil)
+        }
+    }
+
     c_text := strings.clone_to_cstring(text)
     defer delete(c_text)
-    ncurses.mvwaddstr(win, y, x, c_text)
+    wattron(win, COLOR_PAIR(theme))
+    mvwaddstr(win, y, x, c_text)
     wattroff(win, COLOR_PAIR(theme))
 }
