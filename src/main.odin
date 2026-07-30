@@ -1,7 +1,7 @@
 package tuilock
 
 import "core:os"
-import linux "core:sys/linux"
+import "core:sys/linux"
 
 
 main :: proc()

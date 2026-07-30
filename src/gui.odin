@@ -5,6 +5,7 @@ package tuilock
 import "core:fmt"
 import "core:strings"
 import "ncurses"
+import "pam"
 
 
 Field_Kind :: enum {
@@ -187,18 +188,20 @@ dialog_switch_field :: proc(dialog: ^Login_Dialog) {
     dialog.active_field = dialog.active_field == .Username ? .Password : .Username
 }
 
-dialog_submit :: proc(dialog: ^Login_Dialog) {
+dialog_submit :: proc(dialog: ^Login_Dialog) -> bool {
     switch dialog.active_field {
     case .Username:
         dialog.active_field = .Password
     case .Password:
         username := string(field_value(&dialog.username))
-        dialog.message = fmt.tprintf(
-            "Submitted user '%s', password length: %d",
-            username,
-            dialog.password.length,
-        )
+        password := string(field_value(&dialog.password))
+        if pam.auth("tuilock", username, password) {
+            return true
+        }
+        dialog.password.length = 0
+        dialog.message = "Authentication failed"
     }
+    return false
 }
 
 // ------------------------------------------------------------------------
@@ -231,11 +234,9 @@ handle_key :: proc(dialog: ^Login_Dialog, key: i32) -> bool {
     case '\t':
         dialog_switch_field(dialog)
     case '\n', '\r', KEY_ENTER:
-        dialog_submit(dialog)
+        return !dialog_submit(dialog)
     case KEY_BACKSPACE, 127, 8:
         field_remove_char(dialog_active_field(dialog))
-    case 27:
-        return false
     case:
         if key < 32 || key > 126 {
             return true

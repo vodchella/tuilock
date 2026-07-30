@@ -5,7 +5,7 @@ import "core:c/libc"
 import "core:os"
 import "core:strings"
 import "core:sys/posix"
-import linux "core:sys/linux"
+import "core:sys/linux"
 
 
 panic :: proc(msg: string, err: linux.Errno, args: ..any)
