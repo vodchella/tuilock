@@ -124,7 +124,8 @@ gui_draw_field :: proc(win: ^ncurses.Window, field: ^Text_Field, active: bool)
     value  := string(field_value(field))
     output := field.password ? strings.repeat("*", len(value)) : value
     defer if field.password { delete(output) }
-    put_text(win, field.y, field.value_x, output, THEME_INPUT, true)
+    mvwchgat(win, field.y, field.value_x + cast(i32) len(output), 1, A_NORMAL, cast(c.short) THEME_INPUT, nil)
+    put_text(win, field.y, field.value_x, output, THEME_INPUT)
 }
 
 @(private = "file")
@@ -292,14 +293,9 @@ put_text :: proc(
     win:      ^ncurses.Window,
     y, x:     i32,
     text:     string,
-    theme:    i32,
-    is_input: bool = false)
+    theme:    i32)
 {
     using ncurses
-
-    if is_input {
-        mvwchgat(win, y, x + cast(i32) len(text), 1, A_NORMAL, cast(c.short) theme, nil)
-    }
 
     c_text := strings.clone_to_cstring(text)
     defer delete(c_text)
