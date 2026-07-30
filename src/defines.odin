@@ -19,6 +19,7 @@ THEME_INPUT         :: 7
 
 
 Configs :: struct {
+    username:         string,
     target_vt:        int,
     time_format:      string,
     dialog_width:     i32,
@@ -36,6 +37,7 @@ Configs :: struct {
 init_configs :: proc() -> (cfg: Configs)
 {
     using ncurses
+    cfg.username         = get_original_username()
     cfg.target_vt        = 8
     cfg.time_format      = "%a, %d %b %Y - %H:%M"
     cfg.dialog_width     = 64

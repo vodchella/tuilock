@@ -4,6 +4,7 @@ import "core:fmt"
 import "core:c/libc"
 import "core:os"
 import "core:strings"
+import "core:sys/posix"
 import linux "core:sys/linux"
 
 
@@ -42,4 +43,23 @@ get_current_datetime_string :: proc(format: string) -> string
     tm := libc.localtime(&t)
     libc.strftime(&buf[0], len(buf), formatc, tm)
     return strings.clone_from_cstring(cstring(&buf[0]))
+}
+
+get_current_username :: proc() -> (username: string)
+{
+    uid := posix.getuid()
+    pw  := posix.getpwuid(uid)
+    if pw != nil {
+        username = strings.clone_from_cstring(pw.pw_name)
+    }
+    return
+}
+
+get_original_username :: proc() -> (username: string)
+{
+    alloc := context.allocator
+    if username = os.get_env("SUDO_USER", alloc); username != "" {
+        return
+    }
+    return get_current_username()
 }

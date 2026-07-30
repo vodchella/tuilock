@@ -161,6 +161,15 @@ dialog_init :: proc(cfg: Configs, rows, cols: i32) -> (dialog: Login_Dialog)
             value_x  = 13,
         },
     }
+
+    n := min(len(cfg.username), len(dialog.username.buffer) - 1)
+        if (n > 0) {
+        copy(dialog.username.buffer[:n], transmute([]u8) cfg.username)
+        dialog.username.length = n
+        dialog.username.buffer[n] = 0
+        dialog.active_field = .Password
+    }
+
     return
 }
 
