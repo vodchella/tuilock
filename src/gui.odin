@@ -18,6 +18,7 @@ Text_Field :: struct {
     length:   int,
     password: bool,
     y:        i32,
+    value_x:  i32,
 }
 
 Login_Dialog :: struct {
@@ -30,8 +31,6 @@ Login_Dialog :: struct {
     password:     Text_Field,
     message:      string,
 }
-
-DIALOG_INPUT_VALUE_X :: 13
 
 
 @(private)
@@ -90,17 +89,17 @@ gui_draw_time :: proc(cfg: Configs, rows, cols: i32)
     put_text(stdscr, 0, (cols - cast(i32) len(datetime)) / 2, datetime, THEME_TIME)
 }
 
-gui_draw_field :: proc(win: ^ncurses.Window, y: i32, field: ^Text_Field, active: bool) {
+gui_draw_field :: proc(win: ^ncurses.Window, field: ^Text_Field, active: bool) {
     using ncurses
 
     if active { wattron(win, A_BOLD) }
-    put_text(win, y, 2, field.label, THEME_PROMPT)
+    put_text(win, field.y, 2, field.label, THEME_PROMPT)
     if active { wattroff(win, A_BOLD) }
 
     value  := string(field_value(field))
     output := field.password ? strings.repeat("*", len(value)) : value
     defer if field.password { delete(output) }
-    put_text(win, y, DIALOG_INPUT_VALUE_X, output, THEME_INPUT)
+    put_text(win, field.y, field.value_x, output, THEME_INPUT)
 }
 
 gui_draw_dialog :: proc(dialog: ^Login_Dialog) {
@@ -117,15 +116,15 @@ gui_draw_dialog :: proc(dialog: ^Login_Dialog) {
     put_text(win, 2, greet_x, dialog.greet, THEME_GREET)
     put_text(win, 0, 2, " Authenticate to unlock: ", THEME_BORDER)
 
-    gui_draw_field(win, 4, &dialog.username, dialog.active_field == .Username)
-    gui_draw_field(win, 5, &dialog.password, dialog.active_field == .Password)
+    gui_draw_field(win, &dialog.username, dialog.active_field == .Username)
+    gui_draw_field(win, &dialog.password, dialog.active_field == .Password)
 
     if len(dialog.message) > 0 {
         put_text(win, 7, 2, dialog.message, THEME_BORDER)
     }
 
     field := dialog_active_field(dialog)
-    cursor_x := cast(i32) (DIALOG_INPUT_VALUE_X + field.length)
+    cursor_x := field.value_x + cast(i32) field.length
     wmove(win, field.y, cursor_x)
 
     wrefresh(win)
@@ -153,11 +152,13 @@ dialog_init :: proc(cfg: Configs, rows, cols: i32) -> (dialog: Login_Dialog)
             label    = "Username:",
             password = false,
             y        = 4,
+            value_x  = 13,
         },
         password     = Text_Field {
             label    = "Password:",
             password = true,
             y        = 5,
+            value_x  = 13,
         },
     }
     return
