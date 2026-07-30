@@ -15,6 +15,18 @@ panic :: proc(msg: string, err: linux.Errno, args: ..any)
     os.exit(cast(int) err)
 }
 
+fork :: proc() -> linux.Pid
+{
+    pid, err := linux.fork()
+    if err != .NONE {
+        if pid != 0 {
+            panic("fork", err)
+        }
+        os.exit(cast(int) err)
+    }
+    return pid
+}
+
 wait_pid_and_exit :: proc(pid: linux.Pid)
 {
     status: u32

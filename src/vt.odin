@@ -6,9 +6,11 @@ import "core:sys/linux"
 import "core:sys/posix"
 
 
-vt_switch :: proc(vt_number: int)
+vt_switch :: proc(vt_number: int, set_io: bool = true)
 {
-    vt_set_io(vt_number)
+    if set_io {
+        vt_set_io(vt_number)
+    }
     vt_activate(vt_number)
 }
 
@@ -55,7 +57,6 @@ vt_activate :: proc(vt_number: int)
         panic("VT_WAITACTIVE", cast(linux.Errno) -io_res)
     }
 }
-
 
 vt_ignore_term_signals :: proc()
 {
