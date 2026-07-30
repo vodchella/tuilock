@@ -1,3 +1,4 @@
+#+private
 package pam
 
 import "core:c"

@@ -5,6 +5,7 @@ import "core:c/libc"
 import "core:strings"
 
 
+@(private = "file")
 cstring_dup :: proc "c" (s: cstring) -> cstring
 {
     if s == nil {
@@ -22,6 +23,7 @@ cstring_dup :: proc "c" (s: cstring) -> cstring
     return cast(cstring) dst
 }
 
+@(private = "file")
 conversation_proc :: proc "c" (
     num_msg:   c.int,
     messages:  [^]^Message,
@@ -66,6 +68,7 @@ conversation_proc :: proc "c" (
     return SUCCESS
 }
 
+@(private = "file")
 free_responses :: proc "c" (responses: [^]Response, count: int)
 {
     for i in 0..< count {
