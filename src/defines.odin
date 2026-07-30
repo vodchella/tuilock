@@ -4,10 +4,7 @@ package tuilock
 import "ncurses"
 
 
-VT_ACTIVATE   :: u32(0x5606)
-VT_WAITACTIVE :: u32(0x5607)
-TIOCSCTTY     :: u32(0x540E)
-ASCII_ESC     :: "\x1b"
+ASCII_ESC           :: "\x1b"
 
 THEME_BACKGROUND    :: 1
 THEME_TIME          :: 2

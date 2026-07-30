@@ -6,6 +6,39 @@ import "core:sys/linux"
 import "core:sys/posix"
 
 
+@(private = "file")
+VT_ACTIVATE   :: 0x5606
+@(private = "file")
+VT_WAITACTIVE :: 0x5607
+@(private = "file")
+VT_GETSTATE   :: 0x5603
+@(private = "file")
+TIOCSCTTY     :: 0x540E
+
+@(private = "file")
+VT_Stat :: struct {
+    v_active: u16,
+    v_signal: u16,
+    v_state:  u16,
+}
+
+vt_get_active:: proc() -> int
+{
+    fd, err := linux.open("/dev/tty0", {.RDWR})
+    if err != .NONE {
+        panic("open /dev/tty0", err)
+    }
+    defer linux.close(fd)
+
+    state: VT_Stat
+    io_res := linux.ioctl(fd, VT_GETSTATE, cast(uintptr) &state)
+    if io_res < 0 {
+        panic("ioctl VT_GETSTATE", cast(linux.Errno) -io_res)
+    }
+
+    return cast(int) state.v_active
+}
+
 vt_switch :: proc(vt_number: int, set_io: bool = true)
 {
     if set_io {
@@ -14,6 +47,7 @@ vt_switch :: proc(vt_number: int, set_io: bool = true)
     vt_activate(vt_number)
 }
 
+@(private = "file")
 vt_set_io :: proc(vt_number: int)
 {
     _, err := linux.setsid()
@@ -31,7 +65,7 @@ vt_set_io :: proc(vt_number: int)
 
     io_res := cast(int) linux.ioctl(fd, TIOCSCTTY, 1)
     if io_res < 0 {
-        panic("TIOCSCTTY", cast(linux.Errno) -io_res)
+        panic("ioctl TIOCSCTTY", cast(linux.Errno) -io_res)
     }
 
     linux.dup2(fd, linux.STDIN_FILENO)
@@ -39,6 +73,7 @@ vt_set_io :: proc(vt_number: int)
     linux.dup2(fd, linux.STDERR_FILENO)
 }
 
+@(private = "file")
 vt_activate :: proc(vt_number: int)
 {
     fd, err := linux.open("/dev/console", {.RDWR})
@@ -49,12 +84,12 @@ vt_activate :: proc(vt_number: int)
 
     io_res := cast(int) linux.ioctl(fd, VT_ACTIVATE, cast(uintptr) vt_number)
     if io_res < 0 {
-        panic("VT_ACTIVATE", cast(linux.Errno) -io_res)
+        panic("ioctl VT_ACTIVATE", cast(linux.Errno) -io_res)
     }
 
     io_res = cast(int) linux.ioctl(fd, VT_WAITACTIVE, cast(uintptr) vt_number)
     if io_res < 0 {
-        panic("VT_WAITACTIVE", cast(linux.Errno) -io_res)
+        panic("ioctl VT_WAITACTIVE", cast(linux.Errno) -io_res)
     }
 }
 
