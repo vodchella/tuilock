@@ -2,7 +2,8 @@ package tuilock
 
 import "core:fmt"
 import "core:strings"
-import linux "core:sys/linux"
+import "core:sys/linux"
+import "core:sys/posix"
 
 
 vt_switch :: proc(vt_number: int)
@@ -54,3 +55,14 @@ vt_activate :: proc(vt_number: int)
         panic("VT_WAITACTIVE", cast(linux.Errno) -io_res)
     }
 }
+
+
+vt_ignore_term_signals :: proc()
+{
+    posix.sigignore(.SIGINT)   // Ctrl+C
+    posix.sigignore(.SIGQUIT)  // Ctrl+\
+    posix.sigignore(.SIGTSTP)  // Ctrl+Z
+    posix.sigignore(.SIGHUP)
+    posix.sigignore(.SIGTERM)  // kill PID
+}
+

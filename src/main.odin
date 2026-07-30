@@ -18,6 +18,7 @@ main :: proc()
     if is_child {
         cfg := init_configs()
         vt_switch(cfg.target_vt)
+        vt_ignore_term_signals()
         gui_draw_screen(cfg)
         // vt_switch(1)  // EPERM
         return
